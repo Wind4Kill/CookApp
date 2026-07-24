@@ -7,10 +7,6 @@ namespace CookApp.Model.Entities
 {
     public class Ingredient
     {
-        public int IngredientId { get; set; }
-
         public string IngredientName { get; set; } = null!;
-
-        public ICollection<Recipe> Recipes { get; set; } = null!;
     }
 }
