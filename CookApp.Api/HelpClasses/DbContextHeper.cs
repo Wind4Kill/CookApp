@@ -12,7 +12,7 @@ namespace CookApp.Api.HelpClasses
 {
     public static class DbContextHeper
     {
-        public async static void MigrateDb(WebApplication app)
+        public async static void MigrateDb(this WebApplication app)
         {
             using var scope = app.Services.CreateAsyncScope();
 
@@ -25,7 +25,7 @@ namespace CookApp.Api.HelpClasses
 
         }
 
-        public async static void SeedData(WebApplication app)
+        public async static void SeedData(this WebApplication app)
         {
             using var scope = app.Services.CreateAsyncScope();
 

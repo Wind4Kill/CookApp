@@ -7,7 +7,7 @@ namespace CookApp.Api.HelpClasses
 {
     public static class ServiceHelper
     {
-        public static IServiceCollection AddServices(IServiceCollection services)
+        public static IServiceCollection AddServices(this IServiceCollection services)
         {
 
             return services;

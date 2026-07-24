@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using CookApp.Api.HelpClasses;
 using CookApp.Data;
 using Microsoft.EntityFrameworkCore;
 
@@ -32,6 +33,7 @@ var app = builder.Build();
 if (app.Environment.IsProduction())
 {
     app.UseExceptionHandler();
+    app.MigrateDb();
 }
 
 app.UseStatusCodePages();
@@ -40,6 +42,7 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
+    app.SeedData();
 }
 
 app.UseHttpsRedirection();
