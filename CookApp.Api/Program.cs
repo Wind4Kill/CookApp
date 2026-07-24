@@ -1,12 +1,18 @@
 using System.Diagnostics;
+using System.Reflection;
 using CookApp.Api.HelpClasses;
 using CookApp.Data;
+using CookApp.Model;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 builder.Services.AddProblemDetails();
+builder.Services.AddAutoMapper(conf =>
+{
+    conf.AddMaps(Assembly.GetAssembly(typeof(Recipe)));
+});
 
 
 string? connectionString = builder.Configuration.GetConnectionString("DevelopmentConnectionString");
@@ -21,6 +27,8 @@ builder.Services.AddDbContext<ApplicationContext>(options =>
         EnableSensitiveDataLogging();
     }
 });
+
+builder.Services.AddServices();
 
 if (builder.Environment.IsDevelopment())
 {
