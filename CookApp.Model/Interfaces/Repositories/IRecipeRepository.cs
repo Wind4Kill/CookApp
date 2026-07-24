@@ -14,5 +14,7 @@ namespace CookApp.Model.Interfaces
         public Task<List<T>> ToListAsync<T>(IQueryable<T> query);
 
         public Task<Recipe> CreateRecipeAsync(Recipe recipe);
+
+        public Task<int> DeleteRecipe(Recipe recipe);
     }
 }

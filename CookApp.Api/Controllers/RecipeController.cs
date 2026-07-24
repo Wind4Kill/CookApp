@@ -41,5 +41,13 @@ namespace CookApp.Api.Controllers
             return CreatedAtRoute("GetRecipeById", new { id = createdRecipe.RecipeId }, createdRecipe);
         }
 
+        [HttpDelete("{id:int}")]
+        public async Task<ActionResult> DeleteRecipe(int id)
+        {
+            int result = await _recipeService.DeleteRecipe(id);
+
+            return NoContent();
+        }
+
     }
 }

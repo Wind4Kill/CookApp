@@ -11,9 +11,22 @@ namespace CookApp.Data
         public DbSet<Recipe> Recipes { get; set; } = null!;
         public ApplicationContext(DbContextOptions<ApplicationContext> options) : base(options) { }
 
-            protected override void OnModelCreating(ModelBuilder modelBuilder)
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
+        }
+
+        public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+        {
+            var createdRecipies = ChangeTracker.Entries<Recipe>().
+            Where(r => r.State == EntityState.Added).ToList();
+
+            foreach(var entry in createdRecipies)
+            {
+                entry.Property<DateTime>("CreatedAt").CurrentValue = DateTime.Now;
+            }
+
+            return await base.SaveChangesAsync(cancellationToken);
         }
 
     }

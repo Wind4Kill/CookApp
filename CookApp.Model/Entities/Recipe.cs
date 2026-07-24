@@ -13,5 +13,7 @@ namespace CookApp.Model
         public string RecipeName { get; set; } = null!;
 
         public List<Ingredient> Ingredients { get; set; } = null!;
+
+        public bool IsDeleted { get; set; } 
     }
 }

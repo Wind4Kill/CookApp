@@ -24,6 +24,14 @@ namespace CookApp.Data.Repositories
             return recipe;
         }
 
+        public async Task<int> DeleteRecipe(Recipe recipe)
+        {
+            recipe.IsDeleted = true;
+            return await _context.SaveChangesAsync();
+        }
+
+
+
         public async Task<Recipe?> GetRecipeByIdAsync(int id)
         {
             return await _context.Recipes.FirstOrDefaultAsync(r => r.RecipeId == id);
@@ -38,5 +46,6 @@ namespace CookApp.Data.Repositories
         {
             return await query.ToListAsync();
         }
+
     }
 }

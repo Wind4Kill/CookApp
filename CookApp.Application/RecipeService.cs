@@ -35,6 +35,16 @@ namespace CookApp.Application
             return await _recipeRepo.CreateRecipeAsync(createdRecipe);
         }
 
+        public async Task<int> DeleteRecipe(int id)
+        {
+            Recipe? requestedRecipe = await _recipeRepo.GetRecipeByIdAsync(id);
+            if (requestedRecipe is null)
+            {
+                throw new EntityNotFoundException("Recipe with specified ID couldn't be found.");
+            }
+           return await _recipeRepo.DeleteRecipe(requestedRecipe);
+        }
+
         public async Task<GetRecipeByIdDTO> GetRecipeById(int id)
         {
             Recipe? requestedRecipe = await _recipeRepo.GetRecipeByIdAsync(id);

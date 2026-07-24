@@ -15,5 +15,7 @@ namespace CookApp.Model.Interfaces.Services
         public Task<GetRecipeByIdDTO> GetRecipeById(int id);
 
         public Task<Recipe> CreateRecipe(CreateRecipeDTO recipeDTO);
+
+        public Task<int> DeleteRecipe(int id);
     }
 }
