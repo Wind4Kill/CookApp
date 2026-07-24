@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="CookApp.Api/CookApp.Api.csproj" />
+  <Project Path="CookApp.Application/CookApp.Application.csproj" />
+  <Project Path="CookApp.Data/CookApp.Data.csproj" />
+  <Project Path="CookApp.Model/CookApp.Model.csproj" />
+</Solution>
