@@ -20,6 +20,11 @@ namespace CookApp.Model.MapProfiles
             dest => dest.Ingredients,
             opt => opt.MapFrom(src => src.Ingredients.Select(i => i.IngredientName
             )));
+
+            CreateMap<Recipe, GetRecipeByIdDTO>().ForMember(
+            dest => dest.Ingredients,
+            opt => opt.MapFrom(src => src.Ingredients.Select(ingr => ingr.IngredientName
+            )));
         }
     }
 }
