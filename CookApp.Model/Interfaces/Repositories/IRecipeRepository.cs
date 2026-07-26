@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using CookApp.Model.DTOs;
 using CookApp.Model.DTOs.RecipeDTOs;
+using CookApp.Model.FiltrationClasses;
 
 namespace CookApp.Model.Interfaces
 {

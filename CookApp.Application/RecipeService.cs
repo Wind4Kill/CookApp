@@ -9,6 +9,7 @@ using CookApp.Model.DTOs;
 using CookApp.Model.DTOs.RecipeDTOs;
 using CookApp.Model.Entities;
 using CookApp.Model.Exceptions;
+using CookApp.Model.FiltrationClasses;
 using CookApp.Model.Interfaces;
 using CookApp.Model.Interfaces.Services;
 using Microsoft.EntityFrameworkCore;
@@ -59,10 +60,15 @@ namespace CookApp.Application
 
         }
 
-        public async Task<List<GetRecipeDTO>> GetRecipes()
+        public async Task<List<GetRecipeDTO>> GetRecipes(Filter filterOptions)
         {
-            var recipes = _recipeRepo.GetRecipes();
-            return await _mapper.ProjectTo<GetRecipeDTO>(recipes).ToListAsync();
+            IQueryable<Recipe> processedRecipies = _recipeRepo.GetRecipes().
+            OrderRecipes(filterOptions.OrderType).
+            FilterRecipes(filterOptions.FiltrationType, filterOptions.FiltrationData).
+            Paginate(filterOptions.Page);
+            
+
+            return await _mapper.ProjectTo<GetRecipeDTO>(processedRecipies).ToListAsync();
         }
     }
 }

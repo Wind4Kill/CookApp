@@ -14,8 +14,8 @@ namespace CookApp.Data.TypeConfigurations
         public void Configure(EntityTypeBuilder<Recipe> builder)
         {
             builder.OwnsMany<Ingredient>("Ingredients");
-            builder.Property<DateTime>("CreatedAt").IsRequired().HasColumnType("DATE");
-            builder.HasQueryFilter(r=>!r.IsDeleted);
+
+            builder.HasQueryFilter(r => !r.IsDeleted);
         }
     }
 }

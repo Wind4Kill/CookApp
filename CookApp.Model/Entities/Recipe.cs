@@ -4,16 +4,19 @@ using System.Linq;
 using System.Threading.Tasks;
 using CookApp.Model.Entities;
 
-namespace CookApp.Model
+namespace CookApp.Model;
+
+public class Recipe
 {
-    public class Recipe
-    {
-        public int RecipeId { get; set; }
 
-        public string RecipeName { get; set; } = null!;
+    public DateOnly CreatedAt { get; private set; }
 
-        public List<Ingredient> Ingredients { get; set; } = null!;
+    public int RecipeId { get; set; }
 
-        public bool IsDeleted { get; set; } 
-    }
+    public string RecipeName { get; set; } = null!;
+
+    public List<Ingredient> Ingredients { get; set; } = null!;
+
+    public bool IsDeleted { get; set; }
+
 }

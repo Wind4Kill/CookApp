@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using CookApp.Model;
 using CookApp.Model.DTOs.RecipeDTOs;
+using CookApp.Model.FiltrationClasses;
 using CookApp.Model.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
@@ -40,6 +41,7 @@ namespace CookApp.Data.Repositories
         public IQueryable<Recipe> GetRecipes()
         {
             return _context.Recipes.AsNoTracking();
+            
         }
 
         public async Task<List<T>> ToListAsync<T>(IQueryable<T> query)

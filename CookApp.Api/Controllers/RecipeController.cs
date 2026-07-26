@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using CookApp.Model;
 using CookApp.Model.DTOs;
 using CookApp.Model.DTOs.RecipeDTOs;
+using CookApp.Model.FiltrationClasses;
 using CookApp.Model.Interfaces.Services;
 using Microsoft.AspNetCore.Mvc;
 
@@ -21,9 +22,11 @@ namespace CookApp.Api.Controllers
         }
 
         [HttpGet("")]
-        public async Task<ActionResult<List<GetRecipeDTO>>> GetRecipies()
+        [Produces("application/json")]
+        public async Task<ActionResult<List<GetRecipeDTO>>> GetRecipies([FromQuery]FiltrationDTO filterOptions)
         {
-            List<GetRecipeDTO> result = await _recipeService.GetRecipes();
+            Filter filter = new Filter(filterOptions.FiltrationOrder!, filterOptions.FiltrationType!, filterOptions.FiltrationData, filterOptions.Page);
+            List<GetRecipeDTO> result = await _recipeService.GetRecipes(filter);
             return Ok(result);
         }
 
@@ -35,6 +38,7 @@ namespace CookApp.Api.Controllers
         }
 
         [HttpPost("")]
+        [Consumes("application/json")]
         [Produces("application/json")]
         public async Task<ActionResult> CreateRecipe(CreateRecipeDTO recipeDTO)
         {
@@ -43,6 +47,7 @@ namespace CookApp.Api.Controllers
         }
 
         [HttpDelete("{id:int}")]
+        [Produces("application/json")]
         public async Task<ActionResult> DeleteRecipe(int id)
         {
             int result = await _recipeService.DeleteRecipe(id);
