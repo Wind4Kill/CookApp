@@ -9,7 +9,10 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddControllers();
+builder.Services.AddControllers(opts =>
+{
+    opts.ReturnHttpNotAcceptable = true;
+});
 builder.Services.AddProblemDetails();
 builder.Services.AddAutoMapper(conf =>
 {

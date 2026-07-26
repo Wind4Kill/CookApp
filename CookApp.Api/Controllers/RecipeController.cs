@@ -27,7 +27,7 @@ namespace CookApp.Api.Controllers
             return Ok(result);
         }
 
-        [HttpGet("{id:int}", Name ="GetRecipeById")]
+        [HttpGet("{id:int}", Name = "GetRecipeById")]
         public async Task<ActionResult<GetRecipeByIdDTO>> GetRecipeById(int id)
         {
             GetRecipeByIdDTO requestedRecipe = await _recipeService.GetRecipeById(id);
@@ -35,6 +35,7 @@ namespace CookApp.Api.Controllers
         }
 
         [HttpPost("")]
+        [Produces("application/json")]
         public async Task<ActionResult> CreateRecipe(CreateRecipeDTO recipeDTO)
         {
             Recipe createdRecipe = await _recipeService.CreateRecipe(recipeDTO);
