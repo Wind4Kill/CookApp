@@ -25,7 +25,7 @@ string? connectionString = builder.Configuration.GetConnectionString("Developmen
 builder.Services.AddDbContext<ApplicationContext>(options =>
 {
     options.UseNpgsql(connectionString, options => options.EnableRetryOnFailure(10, TimeSpan.FromSeconds(5), null));
-    if(builder.Environment.IsDevelopment())
+    if (builder.Environment.IsDevelopment())
     {
         options.LogTo(message => Debug.WriteLine(message)).
         EnableDetailedErrors().
@@ -47,32 +47,32 @@ if (app.Environment.IsProduction())
 {
     app.UseExceptionHandler(errorApp =>
       {
-            errorApp.Run(async context =>
-            {
-                  var error = context.Features.Get<IExceptionHandlerFeature>()?.Error;
-                  if (error is null)
-                        return;
+          errorApp.Run(async context =>
+          {
+              var error = context.Features.Get<IExceptionHandlerFeature>()?.Error;
+              if (error is null)
+                  return;
 
-                  var (statusCode, message) = error switch
+              var (statusCode, message) = error switch
 
-                  {
-                        EntityNotFoundException => (StatusCodes.Status404NotFound, error.Message),
-                        _ => (StatusCodes.Status500InternalServerError, error.Message)
-                  };
+              {
+                  EntityNotFoundException => (StatusCodes.Status404NotFound, error.Message),
+                  _ => (StatusCodes.Status500InternalServerError, error.Message)
+              };
 
-                  var problemDetails = new Microsoft.AspNetCore.Mvc.ProblemDetails
-                  {
-                        Status = statusCode,
-                        Title = message,
-                        Type = $"https://httpstatuses.com/{statusCode}",
-                        Detail = error.Message,
-                        Instance = context.Request.Path
-                  };
+              var problemDetails = new Microsoft.AspNetCore.Mvc.ProblemDetails
+              {
+                  Status = statusCode,
+                  Title = message,
+                  Type = $"https://httpstatuses.com/{statusCode}",
+                  Detail = error.Message,
+                  Instance = context.Request.Path
+              };
 
-                  context.Response.StatusCode = statusCode;
+              context.Response.StatusCode = statusCode;
 
-                  await context.Response.WriteAsJsonAsync(problemDetails);
-            });
+              await context.Response.WriteAsJsonAsync(problemDetails);
+          });
       });
     app.MigrateDb();
 }

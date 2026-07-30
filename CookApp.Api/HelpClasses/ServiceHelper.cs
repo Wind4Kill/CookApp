@@ -15,6 +15,7 @@ namespace CookApp.Api.HelpClasses
         {
             services.AddScoped<IRecipeRepository, RecipeRepository>();
             services.AddScoped<IRecipeService, RecipeService>();
+            services.AddSingleton<CustomCache>();
             return services;
         }
     }

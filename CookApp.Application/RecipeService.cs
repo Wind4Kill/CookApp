@@ -13,6 +13,7 @@ using CookApp.Model.FiltrationClasses;
 using CookApp.Model.Interfaces;
 using CookApp.Model.Interfaces.Services;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace CookApp.Application
 {
@@ -21,10 +22,13 @@ namespace CookApp.Application
         readonly IRecipeRepository _recipeRepo;
         readonly IMapper _mapper;
 
-        public RecipeService(IRecipeRepository recipeRepository, IMapper mapper)
+        readonly CustomCache _cache;
+
+        public RecipeService(IRecipeRepository recipeRepository, IMapper mapper, CustomCache cache)
         {
             _recipeRepo = recipeRepository;
             _mapper = mapper;
+            _cache = cache;
         }
 
         public async Task<Recipe> CreateRecipe(CreateRecipeDTO recipeDTO)
@@ -38,25 +42,26 @@ namespace CookApp.Application
 
         public async Task<int> DeleteRecipe(int id)
         {
-            Recipe? requestedRecipe = await _recipeRepo.GetRecipeByIdAsync(id);
-            if (requestedRecipe is null)
-            {
-                throw new EntityNotFoundException("Recipe with specified ID couldn't be found.");
-            }
-           return await _recipeRepo.DeleteRecipe(requestedRecipe);
+            Recipe requestedRecipe = await CheckAndReturnRecipe(id);
+            string key = $"Book:{id}";
+            _cache.Cache.Remove(key);
+            return await _recipeRepo.DeleteRecipe(requestedRecipe);
         }
 
         public async Task<GetRecipeByIdDTO> GetRecipeById(int id)
         {
-            Recipe? requestedRecipe = await _recipeRepo.GetRecipeByIdAsync(id);
-
-            if (requestedRecipe is null)
+            string key = $"Recipe:{id}";
+            GetRecipeByIdDTO? mappedRecipe = await _cache.Cache.GetOrCreateAsync(key, async (entry) =>
             {
-                throw new EntityNotFoundException("Recipe with such ID couldn't be found.");
-            }
+                entry.SetAbsoluteExpiration(TimeSpan.FromHours(3));
+                entry.SetSlidingExpiration(TimeSpan.FromHours(1));
+                entry.SetSize(1);
+                Recipe requestedRecipe = await CheckAndReturnRecipe(id);
+                GetRecipeByIdDTO recipeByIdDTO = _mapper.Map<GetRecipeByIdDTO>(requestedRecipe);
+                return recipeByIdDTO!;
+            });
 
-            return _mapper.Map<GetRecipeByIdDTO>(requestedRecipe);
-
+            return mappedRecipe!;
 
         }
 
@@ -66,9 +71,21 @@ namespace CookApp.Application
             OrderRecipes(filterOptions.OrderType).
             FilterRecipes(filterOptions.FiltrationType, filterOptions.FiltrationData).
             Paginate(filterOptions.Page);
-            
+
 
             return await _mapper.ProjectTo<GetRecipeDTO>(processedRecipies).ToListAsync();
+        }
+
+        public async Task<Recipe> CheckAndReturnRecipe(int id)
+        {
+            Recipe? requestedRecipe = await _recipeRepo.GetRecipeByIdAsync(id);
+
+            if (requestedRecipe is null)
+            {
+                throw new EntityNotFoundException($"Entity with provided id {id} wasn't found.");
+            }
+
+            return requestedRecipe;
         }
     }
 }
