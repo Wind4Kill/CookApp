@@ -22,6 +22,7 @@ namespace CookApp.Api.Controllers
         }
 
         [HttpGet("")]
+        [ResponseCache(Duration = 60, Location = ResponseCacheLocation.Any, VaryByQueryKeys = new[]{"FiltrationOrder","FiltrationType","FiltrationData", "Page"})]
         [Produces("application/json")]
         public async Task<ActionResult<List<GetRecipeDTO>>> GetRecipies([FromQuery]FiltrationDTO filterOptions)
         {

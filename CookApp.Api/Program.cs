@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddResponseCaching();
 builder.Services.AddControllers(opts =>
 {
     opts.ReturnHttpNotAcceptable = true;
@@ -87,7 +88,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
+app.UseResponseCaching();
 app.MapControllers();
 
 app.Run();
