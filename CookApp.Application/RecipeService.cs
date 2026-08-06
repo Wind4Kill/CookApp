@@ -21,7 +21,6 @@ namespace CookApp.Application
     {
         readonly IRecipeRepository _recipeRepo;
         readonly IMapper _mapper;
-
         readonly CustomCache _cache;
 
         public RecipeService(IRecipeRepository recipeRepository, IMapper mapper, CustomCache cache)
@@ -40,12 +39,12 @@ namespace CookApp.Application
             return await _recipeRepo.CreateRecipeAsync(createdRecipe);
         }
 
-        public async Task<int> DeleteRecipe(int id)
+        public async Task DeleteRecipe(int id)
         {
             Recipe requestedRecipe = await CheckAndReturnRecipe(id);
             string key = $"Book:{id}";
+            await _recipeRepo.DeleteRecipe(requestedRecipe);
             _cache.Cache.Remove(key);
-            return await _recipeRepo.DeleteRecipe(requestedRecipe);
         }
 
         public async Task<GetRecipeByIdDTO> GetRecipeById(int id)

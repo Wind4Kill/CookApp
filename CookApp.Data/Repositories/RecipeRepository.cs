@@ -25,13 +25,11 @@ namespace CookApp.Data.Repositories
             return recipe;
         }
 
-        public async Task<int> DeleteRecipe(Recipe recipe)
+        public async Task DeleteRecipe(Recipe recipe)
         {
             recipe.IsDeleted = true;
-            return await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync();
         }
-
-
 
         public async Task<Recipe?> GetRecipeByIdAsync(int id)
         {
@@ -41,12 +39,6 @@ namespace CookApp.Data.Repositories
         public IQueryable<Recipe> GetRecipes()
         {
             return _context.Recipes.AsNoTracking();
-            
-        }
-
-        public async Task<List<T>> ToListAsync<T>(IQueryable<T> query)
-        {
-            return await query.ToListAsync();
         }
 
     }

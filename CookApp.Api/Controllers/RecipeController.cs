@@ -58,7 +58,7 @@ namespace CookApp.Api.Controllers
         [Produces("application/json")]
         public async Task<ActionResult> DeleteRecipe(int id)
         {
-            int result = await _recipeService.DeleteRecipe(id);
+            await _recipeService.DeleteRecipe(id);
             await _store.EvictByTagAsync("all-books", default);
 
             return NoContent();
