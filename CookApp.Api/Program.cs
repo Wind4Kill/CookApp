@@ -46,7 +46,7 @@ builder.Services.AddDbContext<ApplicationContext>(options =>
 
 builder.Services.AddServices();
 
-if (builder.Environment.IsDevelopment()||builder.Environment.IsProduction())
+if (builder.Environment.IsDevelopment() || builder.Environment.IsProduction())
 {
     builder.Services.AddEndpointsApiExplorer();
     builder.Services.AddSwaggerGen();
@@ -90,7 +90,7 @@ if (app.Environment.IsProduction())
 
 app.UseStatusCodePages();
 
-if (app.Environment.IsDevelopment()||app.Environment.IsProduction())
+if (app.Environment.IsDevelopment() || app.Environment.IsProduction())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
