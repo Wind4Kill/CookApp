@@ -9,12 +9,22 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddResponseCaching();
 builder.Services.AddControllers(opts =>
 {
     opts.ReturnHttpNotAcceptable = true;
 });
 builder.Services.AddProblemDetails();
+if (builder.Environment.IsProduction())
+{
+    builder.Services.AddStackExchangeRedisOutputCache(options =>
+    {
+        options.Configuration = builder.Configuration.GetConnectionString("RedisConnectionString");
+        options.InstanceName = "CookApi-cache";
+    });
+
+}
+builder.Services.AddOutputCache();
+
 builder.Services.AddAutoMapper(conf =>
 {
     conf.AddMaps(Assembly.GetAssembly(typeof(Recipe)));
@@ -36,7 +46,7 @@ builder.Services.AddDbContext<ApplicationContext>(options =>
 
 builder.Services.AddServices();
 
-if (builder.Environment.IsDevelopment())
+if (builder.Environment.IsDevelopment()||builder.Environment.IsProduction())
 {
     builder.Services.AddEndpointsApiExplorer();
     builder.Services.AddSwaggerGen();
@@ -80,7 +90,7 @@ if (app.Environment.IsProduction())
 
 app.UseStatusCodePages();
 
-if (app.Environment.IsDevelopment())
+if (app.Environment.IsDevelopment()||app.Environment.IsProduction())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
@@ -88,7 +98,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-app.UseResponseCaching();
+app.UseOutputCache();
 app.MapControllers();
 
 app.Run();

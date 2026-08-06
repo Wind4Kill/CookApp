@@ -8,7 +8,6 @@ namespace CookApp.Model;
 
 public class Recipe
 {
-
     public DateOnly CreatedAt { get; private set; }
 
     public int RecipeId { get; set; }

@@ -1,6 +1,0 @@
-@CookApp.Api_HostAddress = http://localhost:5118
-
-GET {{CookApp.Api_HostAddress}}/weatherforecast/
-Accept: application/json
-
-###

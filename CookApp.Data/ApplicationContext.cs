@@ -23,7 +23,7 @@ namespace CookApp.Data
 
             foreach(var entry in createdRecipies)
             {
-                entry.Property<DateTime>("_date").CurrentValue = DateTime.Now;
+                entry.Property<DateOnly>("CreatedAt").CurrentValue = DateOnly.FromDateTime(DateTime.Now);
             }
 
             return await base.SaveChangesAsync(cancellationToken);
