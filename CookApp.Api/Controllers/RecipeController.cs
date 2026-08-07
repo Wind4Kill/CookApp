@@ -58,7 +58,7 @@ namespace CookApp.Api.Controllers
         public async Task<ActionResult<GetRecipeByIdDTO>> CreateRecipe(CreateRecipeDTO recipeDTO, CancellationToken token)
         {
             GetRecipeByIdDTO createdRecipe = await _recipeService.CreateRecipe(recipeDTO, token);
-            await _store.EvictByTagAsync("all-recipes", default);
+            await _store.EvictByTagAsync("all-recipes", token);
 
             return CreatedAtRoute("GetRecipeById", new { id = createdRecipe.RecipeId }, createdRecipe);
         }
@@ -70,7 +70,7 @@ namespace CookApp.Api.Controllers
         public async Task<ActionResult> DeleteRecipe(int id, CancellationToken token)
         {
             await _recipeService.DeleteRecipe(id, token);
-            await _store.EvictByTagAsync("all-recipes", default);
+            await _store.EvictByTagAsync("all-recipes", token);
 
             return NoContent();
         }
