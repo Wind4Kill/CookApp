@@ -1,5 +1,6 @@
 using System.Diagnostics;
 using System.Reflection;
+using CookApp.Api;
 using CookApp.Api.HelpClasses;
 using CookApp.Data;
 using CookApp.Model;
@@ -14,6 +15,7 @@ builder.Services.AddControllers(opts =>
     opts.ReturnHttpNotAcceptable = true;
 });
 builder.Services.AddProblemDetails();
+builder.Services.AddExceptionHandler<CustomExceptionHandler>();
 if (builder.Environment.IsProduction())
 {
     builder.Services.AddStackExchangeRedisOutputCache(options =>
@@ -56,35 +58,7 @@ var app = builder.Build();
 
 if (app.Environment.IsProduction())
 {
-    app.UseExceptionHandler(errorApp =>
-      {
-          errorApp.Run(async context =>
-          {
-              var error = context.Features.Get<IExceptionHandlerFeature>()?.Error;
-              if (error is null)
-                  return;
-
-              var (statusCode, message) = error switch
-
-              {
-                  EntityNotFoundException => (StatusCodes.Status404NotFound, error.Message),
-                  _ => (StatusCodes.Status500InternalServerError, error.Message)
-              };
-
-              var problemDetails = new Microsoft.AspNetCore.Mvc.ProblemDetails
-              {
-                  Status = statusCode,
-                  Title = message,
-                  Type = $"https://httpstatuses.com/{statusCode}",
-                  Detail = error.Message,
-                  Instance = context.Request.Path
-              };
-
-              context.Response.StatusCode = statusCode;
-
-              await context.Response.WriteAsJsonAsync(problemDetails);
-          });
-      });
+    app.UseExceptionHandler();
     app.MigrateDb();
 }
 

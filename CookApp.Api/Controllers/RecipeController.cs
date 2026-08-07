@@ -7,6 +7,7 @@ using CookApp.Model.DTOs;
 using CookApp.Model.DTOs.RecipeDTOs;
 using CookApp.Model.FiltrationClasses;
 using CookApp.Model.Interfaces.Services;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OutputCaching;
 
@@ -26,6 +27,8 @@ namespace CookApp.Api.Controllers
 
         [HttpGet("")]
         [Produces("application/json")]
+        [ProducesResponseType<List<GetRecipeDTO>>(200)]
+        [ProducesErrorResponseType(typeof(BadRequestObjectResult))]
         [OutputCache(Duration =120, Tags = new[] { "all-books" })]
         public async Task<ActionResult<List<GetRecipeDTO>>> GetRecipies([FromQuery]FiltrationDTO filterOptions)
         {
@@ -36,6 +39,9 @@ namespace CookApp.Api.Controllers
         }
 
         [HttpGet("{id:int}", Name = "GetRecipeById")]
+        [Produces("application/json")]
+        [ProducesResponseType<GetRecipeByIdDTO>(200)]
+        [ProducesErrorResponseType(typeof(BadRequestObjectResult))]
         public async Task<ActionResult<GetRecipeByIdDTO>> GetRecipeById(int id)
         {
             GetRecipeByIdDTO requestedRecipe = await _recipeService.GetRecipeById(id);
@@ -56,6 +62,8 @@ namespace CookApp.Api.Controllers
 
         [HttpDelete("{id:int}")]
         [Produces("application/json")]
+        [ProducesResponseType(204)]
+        [ProducesErrorResponseType(typeof(BadRequestObjectResult))]
         public async Task<ActionResult> DeleteRecipe(int id)
         {
             await _recipeService.DeleteRecipe(id);
