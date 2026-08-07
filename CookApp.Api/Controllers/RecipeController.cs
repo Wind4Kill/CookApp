@@ -14,7 +14,7 @@ using Microsoft.AspNetCore.OutputCaching;
 namespace CookApp.Api.Controllers
 {
     [ApiController]
-    [Route("api/Recipies")]
+    [Route("api/Recipes")]
     public class RecipeController : ControllerBase
     {
         readonly IRecipeService _recipeService;
@@ -27,24 +27,25 @@ namespace CookApp.Api.Controllers
 
         [HttpGet("")]
         [Produces("application/json")]
-        [ProducesResponseType<List<GetRecipeDTO>>(200)]
-        [ProducesErrorResponseType(typeof(BadRequestObjectResult))]
-        [OutputCache(Duration =120, Tags = new[] { "all-books" })]
-        public async Task<ActionResult<List<GetRecipeDTO>>> GetRecipies([FromQuery]FiltrationDTO filterOptions)
+        [ProducesResponseType<List<GetRecipeDTO>>(StatusCodes.Status200OK)]
+        [ProducesResponseType<ProblemDetails>(StatusCodes.Status400BadRequest)]
+        [OutputCache(Duration =120, Tags = new[] { "all-recipes" })]
+        public async Task<ActionResult<List<GetRecipeDTO>>> GetRecipies([FromQuery]FiltrationDTO filterOptions, CancellationToken token)
         {
             Filter filter = new Filter(filterOptions.FiltrationOrder!, filterOptions.FiltrationType!, filterOptions.FiltrationData, filterOptions.Page);
-            List<GetRecipeDTO> result = await _recipeService.GetRecipes(filter);
+            List<GetRecipeDTO> result = await _recipeService.GetRecipes(filter, token);
 
             return Ok(result);
         }
 
         [HttpGet("{id:int}", Name = "GetRecipeById")]
         [Produces("application/json")]
-        [ProducesResponseType<GetRecipeByIdDTO>(200)]
+        [ProducesResponseType<GetRecipeByIdDTO>(StatusCodes.Status200OK)]
         [ProducesErrorResponseType(typeof(BadRequestObjectResult))]
-        public async Task<ActionResult<GetRecipeByIdDTO>> GetRecipeById(int id)
+
+        public async Task<ActionResult<GetRecipeByIdDTO>> GetRecipeById(int id, CancellationToken token)
         {
-            GetRecipeByIdDTO requestedRecipe = await _recipeService.GetRecipeById(id);
+            GetRecipeByIdDTO requestedRecipe = await _recipeService.GetRecipeById(id, token);
 
             return Ok(requestedRecipe);
         }
@@ -52,22 +53,24 @@ namespace CookApp.Api.Controllers
         [HttpPost("")]
         [Consumes("application/json")]
         [Produces("application/json")]
-        public async Task<ActionResult> CreateRecipe(CreateRecipeDTO recipeDTO)
+        [ProducesResponseType<GetRecipeByIdDTO>(StatusCodes.Status201Created)]
+
+        public async Task<ActionResult<GetRecipeByIdDTO>> CreateRecipe(CreateRecipeDTO recipeDTO, CancellationToken token)
         {
-            Recipe createdRecipe = await _recipeService.CreateRecipe(recipeDTO);
-            await _store.EvictByTagAsync("all-books", default);
+            GetRecipeByIdDTO createdRecipe = await _recipeService.CreateRecipe(recipeDTO, token);
+            await _store.EvictByTagAsync("all-recipes", default);
 
             return CreatedAtRoute("GetRecipeById", new { id = createdRecipe.RecipeId }, createdRecipe);
         }
 
         [HttpDelete("{id:int}")]
         [Produces("application/json")]
-        [ProducesResponseType(204)]
-        [ProducesErrorResponseType(typeof(BadRequestObjectResult))]
-        public async Task<ActionResult> DeleteRecipe(int id)
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType<ProblemDetails>(StatusCodes.Status204NoContent)]
+        public async Task<ActionResult> DeleteRecipe(int id, CancellationToken token)
         {
-            await _recipeService.DeleteRecipe(id);
-            await _store.EvictByTagAsync("all-books", default);
+            await _recipeService.DeleteRecipe(id, token);
+            await _store.EvictByTagAsync("all-recipes", default);
 
             return NoContent();
         }

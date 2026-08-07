@@ -11,9 +11,9 @@ namespace CookApp.Model.Interfaces
     public interface IRecipeRepository
     {
         public IQueryable<Recipe> GetRecipes();
-        public Task<Recipe?> GetRecipeByIdAsync(int id);
-        public Task<Recipe> CreateRecipeAsync(Recipe recipe);
+        public Task<Recipe?> GetRecipeByIdAsync(int id, CancellationToken token);
+        public Task<Recipe> CreateRecipeAsync(Recipe recipe, CancellationToken token);
 
-        public Task DeleteRecipe(Recipe recipe);
+        public Task DeleteRecipe(Recipe recipe, CancellationToken token);
     }
 }

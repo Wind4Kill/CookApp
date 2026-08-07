@@ -18,27 +18,28 @@ namespace CookApp.Data.Repositories
             _context = context;
         }
 
-        public async Task<Recipe> CreateRecipeAsync(Recipe recipe)
+        public async Task<Recipe> CreateRecipeAsync(Recipe recipe, CancellationToken token)
         {
             _context.Add(recipe);
-            await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync(token);
             return recipe;
         }
 
-        public async Task DeleteRecipe(Recipe recipe)
+        public async Task DeleteRecipe(Recipe recipe, CancellationToken token)
         {
             recipe.IsDeleted = true;
-            await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync(token);
         }
 
-        public async Task<Recipe?> GetRecipeByIdAsync(int id)
+        public async Task<Recipe?> GetRecipeByIdAsync(int id, CancellationToken token)
         {
-            return await _context.Recipes.FirstOrDefaultAsync(r => r.RecipeId == id);
+            return await _context.Recipes.FirstOrDefaultAsync(r => r.RecipeId == id, token);
         }
 
         public IQueryable<Recipe> GetRecipes()
         {
             return _context.Recipes.AsNoTracking();
+            
         }
 
     }

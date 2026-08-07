@@ -11,12 +11,12 @@ namespace CookApp.Model.Interfaces.Services
 {
     public interface IRecipeService
     {
-        public Task<List<GetRecipeDTO>> GetRecipes(Filter filterOptions);
+        public Task<List<GetRecipeDTO>> GetRecipes(Filter filterOptions, CancellationToken token);
 
-        public Task<GetRecipeByIdDTO> GetRecipeById(int id);
+        public Task<GetRecipeByIdDTO> GetRecipeById(int id, CancellationToken token);
 
-        public Task<Recipe> CreateRecipe(CreateRecipeDTO recipeDTO);
+        public Task<GetRecipeByIdDTO> CreateRecipe(CreateRecipeDTO recipeDTO, CancellationToken token);
 
-        public Task DeleteRecipe(int id);
+        public Task DeleteRecipe(int id, CancellationToken token);
     }
 }

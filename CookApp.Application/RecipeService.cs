@@ -3,11 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
-using CookApp.Data.Repositories;
 using CookApp.Model;
 using CookApp.Model.DTOs;
 using CookApp.Model.DTOs.RecipeDTOs;
-using CookApp.Model.Entities;
 using CookApp.Model.Exceptions;
 using CookApp.Model.FiltrationClasses;
 using CookApp.Model.Interfaces;
@@ -30,32 +28,32 @@ namespace CookApp.Application
             _cache = cache;
         }
 
-        public async Task<Recipe> CreateRecipe(CreateRecipeDTO recipeDTO)
+        public async Task<GetRecipeByIdDTO> CreateRecipe(CreateRecipeDTO recipeDTO, CancellationToken token)
         {
-            Ingredient[] recipeIngredients = recipeDTO.Ingredients.Select(ingrName => new Ingredient() { IngredientName = ingrName }).ToArray();
-            Recipe createdRecipe = new Recipe() { RecipeName = recipeDTO.RecipeName, Ingredients = new() };
-            createdRecipe.Ingredients.AddRange(recipeIngredients);
+            Recipe recipe = _mapper.Map<Recipe>(recipeDTO);
 
-            return await _recipeRepo.CreateRecipeAsync(createdRecipe);
+            recipe = await _recipeRepo.CreateRecipeAsync(recipe, token);
+
+            return _mapper.Map<GetRecipeByIdDTO>(recipe);
         }
 
-        public async Task DeleteRecipe(int id)
+        public async Task DeleteRecipe(int id, CancellationToken token)
         {
-            Recipe requestedRecipe = await CheckAndReturnRecipe(id);
-            string key = $"Book:{id}";
-            await _recipeRepo.DeleteRecipe(requestedRecipe);
+            Recipe requestedRecipe = await CheckAndReturnRecipe(id, token);
+            string key = GetKeyString(id);
+            await _recipeRepo.DeleteRecipe(requestedRecipe, token);
             _cache.Cache.Remove(key);
         }
 
-        public async Task<GetRecipeByIdDTO> GetRecipeById(int id)
+        public async Task<GetRecipeByIdDTO> GetRecipeById(int id, CancellationToken token)
         {
-            string key = $"Recipe:{id}";
+            string key = GetKeyString(id);
             GetRecipeByIdDTO? mappedRecipe = await _cache.Cache.GetOrCreateAsync(key, async (entry) =>
             {
                 entry.SetAbsoluteExpiration(TimeSpan.FromHours(3));
                 entry.SetSlidingExpiration(TimeSpan.FromHours(1));
                 entry.SetSize(1);
-                Recipe requestedRecipe = await CheckAndReturnRecipe(id);
+                Recipe requestedRecipe = await CheckAndReturnRecipe(id, token);
                 GetRecipeByIdDTO recipeByIdDTO = _mapper.Map<GetRecipeByIdDTO>(requestedRecipe);
                 return recipeByIdDTO!;
             });
@@ -64,7 +62,7 @@ namespace CookApp.Application
 
         }
 
-        public async Task<List<GetRecipeDTO>> GetRecipes(Filter filterOptions)
+        public async Task<List<GetRecipeDTO>> GetRecipes(Filter filterOptions, CancellationToken token)
         {
             IQueryable<Recipe> processedRecipies = _recipeRepo.GetRecipes().
             OrderRecipes(filterOptions.OrderType).
@@ -72,12 +70,12 @@ namespace CookApp.Application
             Paginate(filterOptions.Page);
 
 
-            return await _mapper.ProjectTo<GetRecipeDTO>(processedRecipies).ToListAsync();
+            return await _mapper.ProjectTo<GetRecipeDTO>(processedRecipies).ToListAsync(token);
         }
 
-        public async Task<Recipe> CheckAndReturnRecipe(int id)
+        async Task<Recipe> CheckAndReturnRecipe(int id, CancellationToken token)
         {
-            Recipe? requestedRecipe = await _recipeRepo.GetRecipeByIdAsync(id);
+            Recipe? requestedRecipe = await _recipeRepo.GetRecipeByIdAsync(id, token);
 
             if (requestedRecipe is null)
             {
@@ -86,5 +84,7 @@ namespace CookApp.Application
 
             return requestedRecipe;
         }
+
+        private string GetKeyString(int id) => $"Recipe:{id}";
     }
 }
