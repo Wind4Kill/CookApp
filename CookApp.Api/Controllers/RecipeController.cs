@@ -41,7 +41,7 @@ namespace CookApp.Api.Controllers
         [HttpGet("{id:int}", Name = "GetRecipeById")]
         [Produces("application/json")]
         [ProducesResponseType<GetRecipeByIdDTO>(StatusCodes.Status200OK)]
-        [ProducesErrorResponseType(typeof(BadRequestObjectResult))]
+        [ProducesResponseType<ProblemDetails>(StatusCodes.Status400BadRequest)]
 
         public async Task<ActionResult<GetRecipeByIdDTO>> GetRecipeById(int id, CancellationToken token)
         {
