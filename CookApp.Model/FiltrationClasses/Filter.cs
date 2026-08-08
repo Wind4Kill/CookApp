@@ -13,30 +13,13 @@ namespace CookApp.Model.FiltrationClasses
 
         public Filter(string orderType, string filtrationType, string? filtrationData, int? page)
         {
-            if (Enum.TryParse<FiltrationOrder>(orderType, true, out FiltrationOrder resultOrderType))
-            {
-                OrderType = resultOrderType;
-            }
-            else
-            {
-                OrderType = FiltrationOrder.Default;
-            }
+            OrderType = Enum.TryParse<FiltrationOrder>(orderType, true, out FiltrationOrder resultOrderType) ? resultOrderType : FiltrationOrder.Default;
 
-            if (Enum.TryParse<FiltrationFilter>(filtrationType, true, out FiltrationFilter resultFilterType))
-            {
-                FiltrationType = resultFilterType;
-            }
-            else
-            {
-                FiltrationType = FiltrationFilter.Default;
-            }
+            FiltrationType = Enum.TryParse<FiltrationFilter>(filtrationType, true, out FiltrationFilter resultFilterType) ? resultFilterType : FiltrationFilter.Default;
 
             FiltrationData = filtrationData;
 
             Page = page is null ? 1 : page.Value;
-
         }
-
-
     }
 }
