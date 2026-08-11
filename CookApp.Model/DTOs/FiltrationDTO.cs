@@ -13,9 +13,13 @@ namespace CookApp.Model.DTOs
     {
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {
-            if ((FiltrationType is not null||FiltrationType!=FiltrationFilter.Default.ToString())&&FiltrationData is null)
+            if ((FiltrationType is not null || FiltrationType != FiltrationFilter.Default.ToString()) && FiltrationData is null)
             {
-                    yield return new ValidationResult("Filtration type other from default must have filtration value.", [nameof(FiltrationData)]);
+                yield return new ValidationResult("Filtration type other from default must have filtration value.", [nameof(FiltrationData)]);
+            }
+            if(Page.HasValue && Page.Value < 1)
+            {
+                yield return new ValidationResult("Page number can't be less than 1.", new[] { nameof(Page) });
             }
         }
     }
