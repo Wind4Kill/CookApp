@@ -1,14 +1,5 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using AutoMapper;
-using CookApp.Model.DTOs;
-using CookApp.Model.Entities;
 
-namespace CookApp.Model;
-
-[AutoMap(typeof(CreateRecipeDTO))]
+namespace CookApp.Model.Entities;
 public class Recipe
 {
     public DateOnly CreatedAt { get; private set; }

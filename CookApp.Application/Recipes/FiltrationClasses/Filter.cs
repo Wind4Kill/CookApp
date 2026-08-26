@@ -1,5 +1,5 @@
 
-namespace CookApp.Model.FiltrationClasses
+namespace CookApp.Application.FiltrationClasses
 {
     public record Filter
     {

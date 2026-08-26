@@ -1,13 +1,6 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using CookApp.Model;
-using CookApp.Model.DTOs;
-using CookApp.Model.DTOs.RecipeDTOs;
-using CookApp.Model.FiltrationClasses;
-using CookApp.Model.Interfaces.Services;
-using Microsoft.AspNetCore.Http.HttpResults;
+using CookApp.Application.DTOs.RecipeDTOs;
+using CookApp.Application.FiltrationClasses;
+using CookApp.Application.Interfaces.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OutputCaching;
 

@@ -2,10 +2,10 @@ using System.Diagnostics;
 using System.Reflection;
 using CookApp.Api;
 using CookApp.Api.HelpClasses;
+using CookApp.Application;
+using CookApp.Application.MapProfiles;
 using CookApp.Data;
-using CookApp.Model;
-using CookApp.Model.Exceptions;
-using Microsoft.AspNetCore.Diagnostics;
+using CookApp.Model.Entities;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -29,24 +29,14 @@ builder.Services.AddOutputCache();
 
 builder.Services.AddAutoMapper(conf =>
 {
-    conf.AddMaps(Assembly.GetAssembly(typeof(Recipe)));
+    conf.AddMaps(typeof(RecipeConfig).Assembly);
 });
 
+string? connectionString = builder.
+Configuration.GetConnectionString("DevelopmentConnectionString");
 
-string? connectionString = builder.Configuration.GetConnectionString("DevelopmentConnectionString");
-
-builder.Services.AddDbContext<ApplicationContext>(options =>
-{
-    options.UseNpgsql(connectionString, options => options.EnableRetryOnFailure(10, TimeSpan.FromSeconds(5), null));
-    if (builder.Environment.IsDevelopment())
-    {
-        options.LogTo(message => Debug.WriteLine(message)).
-        EnableDetailedErrors().
-        EnableSensitiveDataLogging();
-    }
-});
-
-builder.Services.AddServices();
+builder.Services.AddApplication();
+builder.Services.AddData(connectionString);
 
 if (builder.Environment.IsDevelopment() || builder.Environment.IsProduction())
 {

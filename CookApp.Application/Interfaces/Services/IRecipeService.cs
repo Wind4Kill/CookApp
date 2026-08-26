@@ -1,13 +1,8 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using AutoMapper;
-using CookApp.Model.DTOs;
-using CookApp.Model.DTOs.RecipeDTOs;
-using CookApp.Model.FiltrationClasses;
 
-namespace CookApp.Model.Interfaces.Services
+using CookApp.Application.DTOs.RecipeDTOs;
+using CookApp.Application.FiltrationClasses;
+
+namespace CookApp.Application.Interfaces.Services
 {
     public interface IRecipeService
     {

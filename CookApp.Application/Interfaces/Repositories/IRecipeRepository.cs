@@ -1,16 +1,14 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
-using CookApp.Model.DTOs;
-using CookApp.Model.DTOs.RecipeDTOs;
-using CookApp.Model.FiltrationClasses;
+using CookApp.Application.FiltrationClasses;
+using CookApp.Model.Entities;
 
-namespace CookApp.Model.Interfaces
+namespace CookApp.Application.Interfaces.Repositories
 {
     public interface IRecipeRepository
     {
-        public IQueryable<Recipe> GetRecipes();
+        public Task<List<Recipe>> GetRecipes(Filter filerOptions, CancellationToken cancellationToken);
         public Task<Recipe?> GetRecipeByIdAsync(int id, CancellationToken token);
         public Task<Recipe> CreateRecipeAsync(Recipe recipe, CancellationToken token);
 

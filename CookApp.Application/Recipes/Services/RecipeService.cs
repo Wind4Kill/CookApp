@@ -1,12 +1,11 @@
 using AutoMapper;
+using CookApp.Application.DTOs.RecipeDTOs;
+using CookApp.Application.FiltrationClasses;
+using CookApp.Application.Interfaces.Repositories;
+using CookApp.Application.Interfaces.Services;
 using CookApp.Model;
-using CookApp.Model.DTOs;
-using CookApp.Model.DTOs.RecipeDTOs;
+using CookApp.Model.Entities;
 using CookApp.Model.Exceptions;
-using CookApp.Model.FiltrationClasses;
-using CookApp.Model.Interfaces;
-using CookApp.Model.Interfaces.Services;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
 
 namespace CookApp.Application
@@ -60,13 +59,11 @@ namespace CookApp.Application
 
         public async Task<List<GetRecipeDTO>> GetRecipes(Filter filterOptions, CancellationToken token)
         {
-            IQueryable<Recipe> processedRecipies = _recipeRepo.GetRecipes().
-            OrderRecipes(filterOptions.OrderType).
-            FilterRecipes(filterOptions.FiltrationType, filterOptions.FiltrationData).
-            Paginate(filterOptions.Page);
+            List<Recipe> requestedRecipies = await _recipeRepo.GetRecipes(filterOptions, token);
 
+            List<GetRecipeDTO> mappedRecipies = _mapper.Map<List<GetRecipeDTO>>(requestedRecipies);
 
-            return await _mapper.ProjectTo<GetRecipeDTO>(processedRecipies).ToListAsync(token);
+            return mappedRecipies;
         }
 
         async Task<Recipe> CheckAndReturnRecipe(int id, CancellationToken token)
