@@ -23,7 +23,7 @@ namespace CookApp.Api.Controllers
         [ProducesResponseType<List<GetRecipeDTO>>(StatusCodes.Status200OK)]
         [ProducesResponseType<ProblemDetails>(StatusCodes.Status400BadRequest)]
         [OutputCache(Duration =120, Tags = new[] { "all-recipes" })]
-        public async Task<ActionResult<List<GetRecipeDTO>>> GetRecipies([FromQuery]FiltrationDTO filterOptions, CancellationToken token)
+        public async Task<ActionResult> GetRecipies([FromQuery]FiltrationDTO filterOptions, CancellationToken token)
         {
             Filter filter = new Filter(filterOptions.FiltrationOrder!, filterOptions.FiltrationType!, filterOptions.FiltrationData, filterOptions.Page);
             List<GetRecipeDTO> result = await _recipeService.GetRecipes(filter, token);
@@ -36,7 +36,7 @@ namespace CookApp.Api.Controllers
         [ProducesResponseType<GetRecipeByIdDTO>(StatusCodes.Status200OK)]
         [ProducesResponseType<ProblemDetails>(StatusCodes.Status400BadRequest)]
 
-        public async Task<ActionResult<GetRecipeByIdDTO>> GetRecipeById(int id, CancellationToken token)
+        public async Task<ActionResult> GetRecipeById(int id, CancellationToken token)
         {
             GetRecipeByIdDTO requestedRecipe = await _recipeService.GetRecipeById(id, token);
 
@@ -48,7 +48,7 @@ namespace CookApp.Api.Controllers
         [Produces("application/json")]
         [ProducesResponseType<GetRecipeByIdDTO>(StatusCodes.Status201Created)]
 
-        public async Task<ActionResult<GetRecipeByIdDTO>> CreateRecipe(CreateRecipeDTO recipeDTO, CancellationToken token)
+        public async Task<ActionResult> CreateRecipe(CreateRecipeDTO recipeDTO, CancellationToken token)
         {
             GetRecipeByIdDTO createdRecipe = await _recipeService.CreateRecipe(recipeDTO, token);
             await _store.EvictByTagAsync("all-recipes", token);
