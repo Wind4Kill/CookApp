@@ -2,9 +2,11 @@ using System.Diagnostics;
 using System.Reflection;
 using CookApp.Api;
 using CookApp.Api.HelpClasses;
+using CookApp.Api.Validators;
 using CookApp.Application;
 using CookApp.Application.MapProfiles;
 using CookApp.Data;
+using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -35,6 +37,8 @@ if (builder.Environment.IsProduction())
 
 }
 builder.Services.AddOutputCache();
+
+builder.Services.AddValidatorsFromAssembly(typeof(UserRegistrationValidator).Assembly);
 
 builder.Services.AddAutoMapper(conf =>
 {

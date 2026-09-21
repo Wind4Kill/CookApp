@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.OutputCaching;
 namespace CookApp.Api.Controllers
 {
     [ApiController]
-    [Route("api/Recipes")]
+    [Route("api/[controller]")]
     public class RecipeController : ControllerBase
     {
         readonly IRecipeService _recipeService;
