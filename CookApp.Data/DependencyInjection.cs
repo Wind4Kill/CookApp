@@ -1,5 +1,7 @@
 using System.Diagnostics;
+using CookApp.Application.Interfaces.Caching;
 using CookApp.Application.Interfaces.Repositories;
+using CookApp.Data.Caching;
 using CookApp.Data.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -24,6 +26,7 @@ namespace CookApp.Data
             });
 
             services.AddScoped<IRecipeRepository, RecipeRepository>();
+            services.AddSingleton(typeof(ICacheService<>), typeof(CacheService<>));
             
             return services;
         }

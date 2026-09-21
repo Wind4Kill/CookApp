@@ -1,6 +1,7 @@
 using AutoMapper;
 using CookApp.Application.DTOs.RecipeDTOs;
 using CookApp.Application.FiltrationClasses;
+using CookApp.Application.Interfaces.Caching;
 using CookApp.Application.Interfaces.Repositories;
 using CookApp.Application.Interfaces.Services;
 using CookApp.Model;
@@ -14,9 +15,10 @@ namespace CookApp.Application
     {
         readonly IRecipeRepository _recipeRepo;
         readonly IMapper _mapper;
-        readonly CustomCache _cache;
 
-        public RecipeService(IRecipeRepository recipeRepository, IMapper mapper, CustomCache cache)
+        readonly ICacheService<Recipe> _cache;
+
+        public RecipeService(IRecipeRepository recipeRepository, IMapper mapper, ICacheService<Recipe> cache)
         {
             _recipeRepo = recipeRepository;
             _mapper = mapper;
@@ -35,24 +37,20 @@ namespace CookApp.Application
         public async Task DeleteRecipe(int id, CancellationToken token)
         {
             Recipe requestedRecipe = await CheckAndReturnRecipe(id, token);
-            string key = GetKeyString(id);
             await _recipeRepo.DeleteRecipe(requestedRecipe, token);
-            _cache.Cache.Remove(key);
+            await _cache.RemoveAsync(id, token);
         }
 
         public async Task<GetRecipeByIdDTO> GetRecipeById(int id, CancellationToken token)
         {
-            string key = GetKeyString(id);
-            GetRecipeByIdDTO? mappedRecipe = await _cache.Cache.GetOrCreateAsync(key, async (entry) =>
+            Recipe? requestedRecipe = await _cache.GetValueAsync(id, token);
+            if (requestedRecipe is null)
             {
-                entry.SetAbsoluteExpiration(TimeSpan.FromHours(3));
-                entry.SetSlidingExpiration(TimeSpan.FromHours(1));
-                entry.SetSize(1);
-                Recipe requestedRecipe = await CheckAndReturnRecipe(id, token);
-                GetRecipeByIdDTO recipeByIdDTO = _mapper.Map<GetRecipeByIdDTO>(requestedRecipe);
-                return recipeByIdDTO!;
-            });
-
+                requestedRecipe = await CheckAndReturnRecipe(id, token);
+                await _cache.AddValueAsync(requestedRecipe, requestedRecipe.RecipeId, token);
+            }
+            
+            GetRecipeByIdDTO mappedRecipe = _mapper.Map<GetRecipeByIdDTO>(requestedRecipe);
             return mappedRecipe!;
 
         }
@@ -76,8 +74,8 @@ namespace CookApp.Application
             }
 
             return requestedRecipe;
+            
         }
 
-        private string GetKeyString(int id) => $"Recipe:{id}";
     }
 }
