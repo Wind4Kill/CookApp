@@ -15,6 +15,10 @@ builder.Services.AddControllers(opts =>
 });
 builder.Services.AddProblemDetails();
 builder.Services.AddExceptionHandler<CustomExceptionHandler>();
+if(builder.Environment.IsDevelopment())
+{
+    builder.Services.AddDistributedMemoryCache();
+}
 if (builder.Environment.IsProduction())
 {
     string redisConnectionString = builder.Configuration.GetConnectionString("RedisConnectionString")!;
@@ -34,7 +38,7 @@ builder.Services.AddOutputCache();
 
 builder.Services.AddAutoMapper(conf =>
 {
-    conf.AddMaps(typeof(RecipeConfig).Assembly);
+    conf.AddMaps(typeof(RecipeProfile).Assembly);
 });
 
 

@@ -19,13 +19,17 @@ namespace CookApp.Application.MapProfiles
             CreateMap<CreateRecipeDTO, Recipe>()
             .ForMember(dest => dest.RecipeName, options => options.MapFrom(from => from.RecipeName))
             .ForMember(dest => dest.Ingredients, options => options.MapFrom(src => src.Ingredients));
-            
+
             CreateMap<Recipe, GetRecipeDTO>()
             .ForMember(dest => dest.RecipeName, options => options.MapFrom(from => from.RecipeName))
             .ForMember(
             dest => dest.Ingredients,
             opt => opt.MapFrom(src => src.Ingredients.Select(i => i.IngredientName
             )));
+
+            CreateMap<Recipe, GetRecipeByIdDTO>().ForMember(dest => dest.RecipeId, opts => opts.MapFrom(s => s.RecipeId))
+            .ForMember(dest => dest.RecipeName, opts => opts.MapFrom(s => s.RecipeName))
+            .ForMember(dest => dest.Ingredients, opts => opts.MapFrom(s => s.Ingredients));
 
 
         }

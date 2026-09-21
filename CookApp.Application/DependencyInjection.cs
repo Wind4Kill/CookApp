@@ -12,7 +12,6 @@ namespace CookApp.Application
         public static IServiceCollection AddApplication(this IServiceCollection services)
         {
             services.AddScoped<IRecipeService, RecipeService>();
-            services.AddSingleton<CustomCache>();
             return services;
         }
     }
