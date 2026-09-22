@@ -1,13 +1,14 @@
 using CookApp.Application.DTOs.RecipeDTOs;
 using CookApp.Application.FiltrationClasses;
 using CookApp.Application.Interfaces.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OutputCaching;
 
 namespace CookApp.Api.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/recipes")]
     public class RecipeController : ControllerBase
     {
         readonly IRecipeService _recipeService;
@@ -19,11 +20,12 @@ namespace CookApp.Api.Controllers
         }
 
         [HttpGet("")]
+        [Authorize("ForAdmin")]
         [Produces("application/json")]
         [ProducesResponseType<List<GetRecipeDTO>>(StatusCodes.Status200OK)]
         [ProducesResponseType<ProblemDetails>(StatusCodes.Status400BadRequest)]
-        [OutputCache(Duration =120, Tags = new[] { "all-recipes" })]
-        public async Task<ActionResult> GetRecipies([FromQuery]FiltrationDTO filterOptions, CancellationToken token)
+        [OutputCache(Duration = 120, Tags = new[] { "all-recipes" })]
+        public async Task<ActionResult> GetRecipes([FromQuery] FiltrationDTO filterOptions, CancellationToken token)
         {
             Filter filter = new Filter(filterOptions.FiltrationOrder!, filterOptions.FiltrationType!, filterOptions.FiltrationData, filterOptions.Page);
             List<GetRecipeDTO> result = await _recipeService.GetRecipes(filter, token);
@@ -58,7 +60,6 @@ namespace CookApp.Api.Controllers
 
         [HttpDelete("{id:int}")]
         [Produces("application/json")]
-        [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType<ProblemDetails>(StatusCodes.Status204NoContent)]
         public async Task<ActionResult> DeleteRecipe(int id, CancellationToken token)
         {

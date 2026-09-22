@@ -8,6 +8,6 @@ namespace CookApp.Application.Interfaces
 {
     public interface ITokenProvider
     {
-        string GenerateToken(List<Claim> claims);
+        string GenerateToken(Dictionary<string, string> claims);
     }
 }

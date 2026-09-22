@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using CookApp.Application.Interfaces;
 using CookApp.Application.Interfaces.Authentication;
 using CookApp.Application.Interfaces.Caching;
 using CookApp.Application.Interfaces.Repositories;
@@ -40,6 +41,7 @@ namespace CookApp.Data
             services.AddScoped<IRecipeRepository, RecipeRepository>();
             services.AddSingleton(typeof(ICacheService<>), typeof(CacheService<>));
             services.AddScoped<IUserService, UserService>();
+            services.AddSingleton<ITokenProvider, JwtTokenProvider>();
             
             return services;
         }

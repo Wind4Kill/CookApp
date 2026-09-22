@@ -14,7 +14,9 @@ namespace CookApp.Api
         {
             var (statusCode, message) = exception switch
             {
-                EntityNotFoundException=> (StatusCodes.Status400BadRequest, "Resource Not Found."),
+                EntityNotFoundException => (StatusCodes.Status400BadRequest, "Resource Not Found."),
+                UserNotFound => (StatusCodes.Status404NotFound, "User Not Found."),
+                UserWrongDataException => (StatusCodes.Status400BadRequest, "User Wrong Input Data."),
                 _ => (StatusCodes.Status500InternalServerError, "Internal Server Error.")
             };
 

@@ -2,18 +2,15 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using CookApp.Application.Authentication.DTOs;
+using CookApp.Application.Authentication;
 using FluentValidation;
 
 namespace CookApp.Api.Validators
 {
-    public class UserRegistrationValidator : AbstractValidator<UserRegisterDTO>
+    public class UserLoginValidator : AbstractValidator<UserLoginDTO>
     {
-        public UserRegistrationValidator()
+        public UserLoginValidator()
         {
-            RuleFor(u => u.Login).NotEmpty().WithMessage("User login can't be empty.")
-            .MinimumLength(10).WithMessage("User login must be at least 10 characters in length.")
-            .MaximumLength(30).WithMessage("User login must be maximum 30 characters in length.");
             RuleFor(u => u.Email).NotEmpty().WithMessage("Email field can't be empty.")
             .EmailAddress().WithMessage("Input user email has an inappropriate format.");
             RuleFor(u => u.Password).NotEmpty().WithMessage("User password can't be empty.")
