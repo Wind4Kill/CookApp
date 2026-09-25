@@ -2,17 +2,15 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
-using System.Security.Cryptography.X509Certificates;
-using System.Threading.Tasks;
 using CookApp.Data;
-using CookApp.Model;
 using CookApp.Model.Entities;
+using CookApp.Model.Entities.UserClasses;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace CookApp.Api.HelpClasses
 {
-    public static class DbContextHeper
+    public static class DbContextHelper
     {
         public async static Task MigrateDb(this WebApplication app)
         {

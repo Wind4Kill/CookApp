@@ -11,7 +11,6 @@ using CookApp.Application;
 using CookApp.Application.MapProfiles;
 using CookApp.Data;
 using FluentValidation;
-using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -23,6 +22,7 @@ builder.Services.AddControllers(opts =>
     opts.ReturnHttpNotAcceptable = true;
 });
 builder.Services.AddProblemDetails();
+builder.Services.AddHttpContextAccessor();
 builder.Services.AddExceptionHandler<CustomExceptionHandler>();
 if (builder.Environment.IsDevelopment())
 {

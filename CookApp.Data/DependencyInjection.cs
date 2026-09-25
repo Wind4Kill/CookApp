@@ -6,7 +6,7 @@ using CookApp.Application.Interfaces.Repositories;
 using CookApp.Data.Authentication;
 using CookApp.Data.Caching;
 using CookApp.Data.Repositories;
-using CookApp.Model.Entities;
+using CookApp.Model.Entities.UserClasses;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 

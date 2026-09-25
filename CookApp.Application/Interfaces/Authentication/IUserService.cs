@@ -10,6 +10,7 @@ namespace CookApp.Application.Interfaces.Authentication
     public interface IUserService
     {
         Task RegisterUser(UserRegisterDTO userCredentials);
-        Task<string> LoginUser(UserLoginDTO userCredentials);
+        Task<TokensResponseDTO> LoginUser(UserLoginDTO userCredentials);
+        Task<TokensResponseDTO> RefreshTokens(string refreshToken);
     }
 }

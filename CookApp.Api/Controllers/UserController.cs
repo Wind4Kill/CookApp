@@ -7,6 +7,7 @@ using CookApp.Application.Authentication;
 using CookApp.Application.Authentication.DTOs;
 using CookApp.Application.Interfaces.Authentication;
 using FluentValidation;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CookApp.Api.Controllers
@@ -56,9 +57,18 @@ namespace CookApp.Api.Controllers
                 return ValidationProblem(ModelState);
             }
 
-            string token = await _userService.LoginUser(userCredentials);
+            TokensResponseDTO tokens = await _userService.LoginUser(userCredentials);
 
-            return Ok(token);
+            return Ok(tokens);
+        }
+
+        [HttpPost("Refresh")]
+        [Authorize]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<IActionResult> RefreshToken([FromQuery]string refreshToken)
+        {
+            TokensResponseDTO tokens = await _userService.RefreshTokens(refreshToken);
+            return Ok(tokens);
         }
     }
 }

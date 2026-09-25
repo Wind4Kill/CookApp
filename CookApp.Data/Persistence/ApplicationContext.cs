@@ -1,7 +1,7 @@
 
 using System.Reflection;
-using CookApp.Model;
 using CookApp.Model.Entities;
+using CookApp.Model.Entities.UserClasses;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
@@ -10,6 +10,7 @@ namespace CookApp.Data
     public class ApplicationContext : IdentityDbContext<User>
     {
         public DbSet<Recipe> Recipes { get; set; } = null!;
+        public DbSet<RefreshToken> RefreshTokens { get; set; } = null!;
         public ApplicationContext(DbContextOptions<ApplicationContext> options) : base(options) { }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
