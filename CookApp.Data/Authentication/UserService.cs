@@ -22,8 +22,7 @@ namespace CookApp.Data.Authentication
             var strategy = dbContext.Database.CreateExecutionStrategy();
             await strategy.ExecuteAsync(async () =>
             {
-                using var transaction = await dbContext.Database.BeginTransactionAsync();
-
+                await using var transaction = await dbContext.Database.BeginTransactionAsync();
 
                 User user = new User(userName: userCredentials.Login)
                 {
