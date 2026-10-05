@@ -20,7 +20,6 @@ namespace CookApp.Api.Controllers
         }
 
         [HttpGet("")]
-        [Authorize("ForAdmin")]
         [Produces("application/json")]
         [ProducesResponseType<List<GetRecipeDTO>>(StatusCodes.Status200OK)]
         [ProducesResponseType<ProblemDetails>(StatusCodes.Status400BadRequest)]
@@ -46,6 +45,7 @@ namespace CookApp.Api.Controllers
         }
 
         [HttpPost("")]
+        [Authorize]
         [Consumes("application/json")]
         [Produces("application/json")]
         [ProducesResponseType<GetRecipeByIdDTO>(StatusCodes.Status201Created)]
@@ -59,6 +59,7 @@ namespace CookApp.Api.Controllers
         }
 
         [HttpDelete("{id:int}")]
+        [Authorize]
         [Produces("application/json")]
         [ProducesResponseType<ProblemDetails>(StatusCodes.Status204NoContent)]
         public async Task<ActionResult> DeleteRecipe(int id, CancellationToken token)

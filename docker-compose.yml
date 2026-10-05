@@ -44,8 +44,9 @@ services:
     container_name: SEQ
     environment:
       - ACCEPT_EULA=Y
+      - SEQ_FIRSTRUN_NOAUTHENTICATION=True
     ports:
-      - 5431:5431
+      - 5341:5341
       - 8081:80
 
 volumes:
