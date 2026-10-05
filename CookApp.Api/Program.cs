@@ -14,6 +14,7 @@ using FluentValidation;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -52,6 +53,11 @@ builder.Services.AddAutoMapper(conf =>
     conf.AddMaps(typeof(RecipeProfile).Assembly);
 });
 
+builder.Host.UseSerilog((context, logger) =>
+{
+    logger.ReadFrom.Configuration(context.Configuration);
+});
+
 
 builder.Services.AddApplication(builder.Configuration);
 
@@ -82,11 +88,13 @@ builder.Services.AddAuthentication(options =>
 builder.Services.AddAuthorization(options =>
 {
     options.AddPolicy("ForAdmin", policy => policy.
-    RequireClaim("name",builder.Configuration["AdminCredentials:Login"]!)
+    RequireClaim("name", builder.Configuration["AdminCredentials:Login"]!)
     .RequireClaim("role", "Admin"));
 });
 
 var app = builder.Build();
+
+app.UseSerilogRequestLogging();
 
 if (app.Environment.IsProduction())
 {
