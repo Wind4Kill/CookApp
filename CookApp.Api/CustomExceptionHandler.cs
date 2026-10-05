@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace CookApp.Api
 {
-    public class CustomExceptionHandler : IExceptionHandler
+    public class CustomExceptionHandler(ILogger<CustomExceptionHandler> logger) : IExceptionHandler
     {
         public async ValueTask<bool> TryHandleAsync(HttpContext httpContext, Exception exception, CancellationToken cancellationToken)
         {
@@ -27,6 +27,8 @@ namespace CookApp.Api
                 Detail = exception.Message,
                 Instance = httpContext.Request.Path
             };
+
+            logger.LogError(exception, "Error occured: {Message}", message);
 
             httpContext.Response.StatusCode = statusCode;
 

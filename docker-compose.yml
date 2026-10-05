@@ -1,12 +1,16 @@
 services:
   api:
     build: .
-    container_name: API
+    container_name: api
     ports:
       - 8080:8080
     environment:
       - ConnectionStrings__DevelopmentConnectionString=${DB_CONNECTION}
       - ConnectionStrings__RedisConnectionString=${REDIS_CONNECTION}
+      - JwtSettings__Issuer=${ISSUER}
+      - JwtSettings__Issued=${ISSUED}
+      - JwtSettings__Expiration=${EXPIRATION}
+      - JwtSettings__SecretKey=${SECRET_KEY}
     depends_on:
       db:
         condition: service_healthy
@@ -15,7 +19,7 @@ services:
 
   db:
     image: postgres:16
-    container_name: DB
+    container_name: db
     environment:
       - POSTGRES_PASSWORD=${DB_PASSWORD}
       - POSTGRES_DB=${DB_NAME}
@@ -30,7 +34,7 @@ services:
 
   redis:
     image: redis:8-alpine
-    container_name: REDIS
+    container_name: redis
     volumes:
       - redis_data:/data
     healthcheck:
@@ -41,7 +45,7 @@ services:
 
   seq:
     image: datalust/seq:latest
-    container_name: SEQ
+    container_name: seq
     environment:
       - ACCEPT_EULA=Y
       - SEQ_FIRSTRUN_NOAUTHENTICATION=True
